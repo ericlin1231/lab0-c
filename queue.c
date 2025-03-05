@@ -101,7 +101,7 @@ element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
 
     element_t *node = list_last_entry(head, element_t, list);
     snprintf(sp, bufsize, node->value);
-    list_del(&(node->list));
+    list_del(head->prev);
     return node;
 }
 
@@ -129,13 +129,13 @@ bool q_delete_mid(struct list_head *head)
     if (list_empty(head))
         return false;
 
-    struct list_head *fast = head->next->next, *slow = head->next;
-    while (fast != head) {
-        fast = fast->next->next;
-        slow = slow->next;
-    }
-    list_del(slow);
-    element_t *node = container_of(slow, element_t, list);
+    struct list_head *next = head->next, *prev = head->prev;
+    for (; (next != prev) && (next->next != prev);
+         next = next->next, prev = prev->prev)
+        ;
+
+    element_t *node = container_of(prev, element_t, list);
+    list_del(prev);
     free(node->value);
     free(node);
     return true;
