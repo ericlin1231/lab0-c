@@ -55,7 +55,7 @@ bool q_insert_head(struct list_head *head, char *s)
     if (!(node->value))
         return false;
 
-    snprintf(node->value, strlen(node->value), s);
+    snprintf(node->value, strlen(node->value), "%s", s);
     list_add(&(node->list), head);
     return true;
 }
@@ -76,7 +76,7 @@ bool q_insert_tail(struct list_head *head, char *s)
     if (!(node->value))
         return false;
 
-    snprintf(node->value, strlen(node->value), s);
+    snprintf(node->value, strlen(node->value), "%s", s);
     list_add_tail(&(node->list), head);
     return true;
 }
@@ -88,7 +88,7 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
         return NULL;
 
     element_t *node = container_of(head->next, element_t, list);
-    snprintf(sp, bufsize, node->value);
+    snprintf(sp, bufsize, "%s", node->value);
     list_del(head->next);
     return node;
 }
@@ -100,7 +100,7 @@ element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
         return NULL;
 
     element_t *node = list_last_entry(head, element_t, list);
-    snprintf(sp, bufsize, node->value);
+    snprintf(sp, bufsize, "%s", node->value);
     list_del(head->prev);
     return node;
 }
@@ -123,10 +123,7 @@ int q_size(struct list_head *head)
 bool q_delete_mid(struct list_head *head)
 {
     // https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/
-    if (!head)
-        return false;
-
-    if (list_empty(head))
+    if (!head || list_empty(head))
         return false;
 
     struct list_head *next = head->next, *prev = head->prev;
